@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class ServerRequests {
 
-    private static final String basicUrl = "http://192.168.2.6:8080";
+    private static final String basicUrl = "http://192.168.2.9:8080";
 
     public static void sendCoords(final String latitude, final String longitude) {
         Thread thread = new Thread(new Runnable() {
@@ -34,6 +34,10 @@ public class ServerRequests {
         });
 
         thread.start();
+    }
+
+    public static String getLoginUrl() {
+        return basicUrl + "/login/tryLogin";
     }
 
 }
