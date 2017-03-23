@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import pl.lodz.trackingsystem.utils.AppUtils;
 import pl.lodz.trackingsystem.utils.ServerRequests;
 
@@ -21,6 +24,18 @@ public class GPSTracker extends Service implements LocationListener {
      * Param used in waiting methods
      */
     private final int waitTime = 5000;
+
+    /**
+     * Param for requestLocationUpdate in sec
+     * min time of update the location (it's not the real interval)
+     */
+    private final long minUpdateTime = 60;
+
+    /**
+     * Param for requestLocationUpdate in meters
+     * min disctance of update the location
+     */
+    private final float minDiscance = 100;
 
     /**
      * Context from Action class
@@ -48,6 +63,11 @@ public class GPSTracker extends Service implements LocationListener {
     private double longitude;
 
     /**
+     * Timer variable
+     */
+    private Timer timer;
+
+    /**
      * Constructor for class, initialize gps provider
      * @param context
      * @param timePeriod in minutes
@@ -61,7 +81,7 @@ public class GPSTracker extends Service implements LocationListener {
      * Method for initialize gps provider
      * @param timePeriod in minutes
      */
-    public void init(long timePeriod) {
+    private void init(long timePeriod) {
         try {
             locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE); // get service from application context
 
@@ -71,11 +91,12 @@ public class GPSTracker extends Service implements LocationListener {
             }
 
             // we got access to use gps so we are setting listener on gps
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 60 * timePeriod, 100, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * minUpdateTime , minDiscance, this);
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             // updating our variables with last known position
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+            startTimer(timePeriod);
         } catch (Exception e) {
             e.printStackTrace(); // TODO change for logger
         }
@@ -92,6 +113,7 @@ public class GPSTracker extends Service implements LocationListener {
             }
 
             locationManager.removeUpdates(GPSTracker.this);
+            stopTimer();
         }
     }
 
@@ -101,6 +123,27 @@ public class GPSTracker extends Service implements LocationListener {
 
     public double getLongitude() {
         return location.getLongitude();
+    }
+
+    private void startTimer(long time) {
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                // send coords to server every time when method is called
+                ServerRequests.sendCoords(String.valueOf(latitude), String.valueOf(longitude), "Mateusz"); // TODO change for logged user
+            }
+        };
+
+        // schedule our timer
+        timer.schedule(task, 1000, time);
+    }
+
+    private void stopTimer() {
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
     // below are methods from interface
@@ -115,8 +158,6 @@ public class GPSTracker extends Service implements LocationListener {
         // update our location
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-
-        ServerRequests.sendCoords(String.valueOf(latitude), String.valueOf(longitude));
     }
 
     @Override
