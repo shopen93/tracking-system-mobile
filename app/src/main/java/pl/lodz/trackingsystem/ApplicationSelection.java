@@ -25,8 +25,7 @@ public class ApplicationSelection extends AppCompatActivity {
         settings = getSharedPreferences(AppUtils.PREFS_NAME, 0);
         if(!"".equals(settings.getString("APPLICATION_MODE", ""))) {
             // we know which app is it, redirect to next action
-            Intent intent = new Intent(ApplicationSelection.this, LoginActivity.class);
-            startActivity(intent);
+            nextAction();
         }
 
         acceptButton = (Button) findViewById(R.id.acceptButton);
@@ -34,25 +33,32 @@ public class ApplicationSelection extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int chosenRadio = radioGroup.getCheckedRadioButtonId();
-                String appMode = "";
 
                 if(R.id.monitRadio == chosenRadio) {
                     // we will monit this device and send data to server
-                    appMode = AppUtils.MONIT_APP;
+                    saveApplicationMode(AppUtils.MONIT_APP);
                 } else {
                     // we are admin, we only receive monits from server
-                    appMode = AppUtils.ADMIN_APP;
+                    saveApplicationMode(AppUtils.ADMIN_APP);
                 }
 
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("APPLICATION_MODE", appMode);
-                editor.commit();
-
-                Intent intent = new Intent(ApplicationSelection.this, LoginActivity.class);
-                startActivity(intent);
+                nextAction();
             }
         });
 
         radioGroup = (RadioGroup) findViewById(R.id.selectionGroup);
     }
+
+    private void nextAction() {
+        Intent intent = new Intent(ApplicationSelection.this, LoginActivity.class);
+        finishAffinity();
+        startActivity(intent);
+    }
+
+    private void saveApplicationMode(String appMode) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("APPLICATION_MODE", appMode);
+        editor.commit();
+    }
+
 }

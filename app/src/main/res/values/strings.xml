@@ -2,6 +2,12 @@
     <string name="app_name">Tracking system</string>
     <string name="title_activity_login">Sign in</string>
 
+    <!-- Strings related to applicationSelectionActivity -->
+    <string name="selection_text">Wybierz rodzaj aplikacji:</string>
+    <string name="selection_monit">monitorująca</string>
+    <string name="selection_admin">administracyjna</string>
+    <string name="selection_button">DALEJ</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Hasło</string>
@@ -10,4 +16,8 @@
     <string name="error_invalid_password">Podaj hasło</string>
     <string name="error_field_required">Podaj login (adres email)</string>
     <string name="error_login">Niepoprawny login lub hasło</string>
+
+    <!-- Strings related to userActivity -->
+    <string name="user_name">Podaj imię (nick) użytkownika śledzonego</string>
+    <string name="user_name_error">Podaj poprawne imię (nick)</string>
 </resources>

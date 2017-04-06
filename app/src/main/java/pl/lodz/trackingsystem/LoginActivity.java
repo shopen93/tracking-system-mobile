@@ -3,47 +3,27 @@ package pl.lodz.trackingsystem;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import pl.lodz.trackingsystem.models.User;
+import pl.lodz.trackingsystem.utils.AppUtils;
 import pl.lodz.trackingsystem.utils.ServerRequests;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -58,10 +38,18 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
+    private SharedPreferences settings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        settings = getSharedPreferences(AppUtils.PREFS_NAME, 0);
+        if(!"".equals(settings.getString("LOGIN", ""))) {
+            // already logged
+            nextAction();
+        }
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -98,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Check for a valid password, if the user entered one.
+        // Check for a valid password.
         if (TextUtils.isEmpty(mPasswordView.getText().toString()) ) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             return false;
@@ -140,7 +128,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, List<User>> {
+    private void nextAction() {
+        // TODO redirect for next action (MODE)
+        Intent intent = new Intent(LoginActivity.this, UserActivity.class);
+        finishAffinity();
+        startActivity(intent);
+    }
+
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
@@ -151,27 +146,27 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected List<User> doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             try {
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
                 MultiValueMap<String, String> param = new LinkedMultiValueMap<String, String>();
                 param.add("login", mEmail);
                 param.add("password", mPassword);
-                ResponseEntity<User[]> response = restTemplate.postForEntity(ServerRequests.getLoginUrl(), param, User[].class);
-                return Arrays.asList(response.getBody());
+                return restTemplate.postForObject(ServerRequests.getLoginUrl(), param, Boolean.class); // TODO repair this
             } catch (Exception e) {
                 return null;
             }
         }
 
         @Override
-        protected void onPostExecute(final List<User> users) {
+        protected void onPostExecute(final Boolean login) {
             mAuthTask = null;
             showProgress(false);
 
-            if (users != null) {
-                finish();
+            if (true) { // TODO change this!!!
+                saveLogin(mEmail);
+                nextAction();
             } else {
                 Toast.makeText(LoginActivity.this, getString(R.string.error_login), Toast.LENGTH_SHORT).show();
             }
@@ -181,6 +176,12 @@ public class LoginActivity extends AppCompatActivity {
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+        private void saveLogin(String email) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("LOGIN", email);
+            editor.commit();
         }
     }
 

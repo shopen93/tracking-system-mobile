@@ -15,6 +15,4 @@ public class Permissions {
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {}
-
 }

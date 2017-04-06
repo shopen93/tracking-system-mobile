@@ -17,7 +17,7 @@
         android:id="@+id/selectionGroup"
         android:checkedButton="@+id/monitRadio">
         <RadioButton
-            android:text="monitorująca"
+            android:text="@string/selection_monit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -27,7 +27,7 @@
             android:duplicateParentState="false"
             android:checked="false" />
         <RadioButton
-            android:text="administracyjna"
+            android:text="@string/selection_admin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/adminRadio"
@@ -38,17 +38,17 @@
     </RadioGroup>
 
     <TextView
-        android:text="Wybierz rodzaj aplikacji:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
         android:textSize="18sp"
         android:layout_marginTop="92dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="@string/selection_text" />
 
     <Button
-        android:text="Dalej"
+        android:text="@string/selection_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/acceptButton"

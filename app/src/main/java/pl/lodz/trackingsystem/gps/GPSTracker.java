@@ -1,29 +1,20 @@
 package pl.lodz.trackingsystem.gps;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import pl.lodz.trackingsystem.utils.AppUtils;
 import pl.lodz.trackingsystem.utils.ServerRequests;
 
 public class GPSTracker extends Service implements LocationListener {
-
-    /**
-     * Param used in waiting methods
-     */
-    private final int waitTime = 5000;
 
     /**
      * Param for requestLocationUpdate in sec
@@ -68,13 +59,32 @@ public class GPSTracker extends Service implements LocationListener {
     private Timer timer;
 
     /**
+     * User name
+     */
+    private String userName = "";
+    /**
      * Constructor for class, initialize gps provider
      * @param context
      * @param timePeriod in minutes
      */
-    public GPSTracker(Context context, long timePeriod) {
+    public GPSTracker(Context context, long timePeriod, String userName) {
         this.context = context;
+        this.userName = userName;
         init(timePeriod);
+    }
+
+    /**
+     * Method for stop listening gps signal
+     */
+    public void stopUsingGPSTracker() {
+        if (locationManager != null) {
+            try{
+                locationManager.removeUpdates(GPSTracker.this);
+                stopTimer();
+            } catch (SecurityException e) {
+                e.printStackTrace(); // TODO change for logger
+            }
+        }
     }
 
     /**
@@ -84,45 +94,18 @@ public class GPSTracker extends Service implements LocationListener {
     private void init(long timePeriod) {
         try {
             locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE); // get service from application context
-
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                AppUtils.wait(waitTime); // if we still don't have permission we are waiting and trying one more time
-                init(timePeriod);
-            }
-
-            // we got access to use gps so we are setting listener on gps
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * minUpdateTime , minDiscance, this);
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             // updating our variables with last known position
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             startTimer(timePeriod);
+        } catch (SecurityException e) {
+          // we don't have access
+            e.printStackTrace(); // TODO change for logger
         } catch (Exception e) {
             e.printStackTrace(); // TODO change for logger
         }
-    }
-
-    /**
-     * Method for stop listening gps signal
-     */
-    public void stopUsingGPSTracker() {
-        if (locationManager != null) {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                AppUtils.wait(waitTime);
-                stopUsingGPSTracker();
-            }
-
-            locationManager.removeUpdates(GPSTracker.this);
-            stopTimer();
-        }
-    }
-
-    public double getLatitude() {
-        return location.getLatitude();
-    }
-
-    public double getLongitude() {
-        return location.getLongitude();
     }
 
     private void startTimer(long time) {
@@ -131,12 +114,12 @@ public class GPSTracker extends Service implements LocationListener {
             @Override
             public void run() {
                 // send coords to server every time when method is called
-                ServerRequests.sendCoords(String.valueOf(latitude), String.valueOf(longitude), "Mateusz"); // TODO change for logged user
+                ServerRequests.sendCoords(String.valueOf(latitude), String.valueOf(longitude), userName);
             }
         };
 
         // schedule our timer
-        timer.schedule(task, 1000, time);
+        timer.schedule(task, 1000, time*60*1000);
     }
 
     private void stopTimer() {
