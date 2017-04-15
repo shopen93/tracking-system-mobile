@@ -15,7 +15,7 @@ public class ServerRequests {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = basicUrl + "/user/addCoordinates";
+                String url = basicUrl + "/user/addCoordinates"; //TODO change url for mobileController
                 try{
                     RestTemplate restTemplate = new RestTemplate();
                     restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -34,7 +34,7 @@ public class ServerRequests {
     }
 
     public static String getLoginUrl() {
-        return basicUrl + "/login/tryLogin";
+        return basicUrl + "/login/tryLogin"; //TODO change url for mobileController
     }
 
 }

@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import pl.lodz.trackingsystem.utils.AppUtils;
 import pl.lodz.trackingsystem.utils.Permissions;
@@ -60,6 +61,7 @@ public class UserActivity extends AppCompatActivity {
     private void nextAction() {
         Intent intent = new Intent(UserActivity.this, GpsService.class);
         finishAffinity();
+        Toast.makeText(getApplicationContext(), getString(R.string.user_toast_info), Toast.LENGTH_SHORT).show();
         startService(intent);
     }
 

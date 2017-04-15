@@ -20,4 +20,6 @@
     <!-- Strings related to userActivity -->
     <string name="user_name">Podaj imię (nick) użytkownika śledzonego</string>
     <string name="user_name_error">Podaj poprawne imię (nick)</string>
+    <string name="user_info">Po kliknięciu w przycisk aplikacji zostanie uruchomiona w tle. W celu dalszej konfiguracji prosimy o zalogowanie się na stronę trackingSystem.</string>
+    <string name="user_toast_info">Aplikacja działa teraz w tle.</string>
 </resources>
