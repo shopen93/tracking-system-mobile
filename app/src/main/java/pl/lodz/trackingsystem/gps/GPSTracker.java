@@ -59,16 +59,22 @@ public class GPSTracker extends Service implements LocationListener {
     private Timer timer;
 
     /**
+     * Login
+     */
+    private String login = "";
+    /**
      * User name
      */
     private String userName = "";
+
     /**
      * Constructor for class, initialize gps provider
      * @param context
      * @param timePeriod in minutes
      */
-    public GPSTracker(Context context, long timePeriod, String userName) {
+    public GPSTracker(Context context, long timePeriod, String login, String userName) {
         this.context = context;
+        this.login = login;
         this.userName = userName;
         init(timePeriod);
     }
@@ -114,7 +120,7 @@ public class GPSTracker extends Service implements LocationListener {
             @Override
             public void run() {
                 // send coords to server every time when method is called
-                ServerRequests.sendCoords(String.valueOf(latitude), String.valueOf(longitude), userName);
+                ServerRequests.sendCoords(login, String.valueOf(latitude), String.valueOf(longitude), userName);
             }
         };
 

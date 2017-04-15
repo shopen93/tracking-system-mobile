@@ -9,17 +9,18 @@ import java.util.HashMap;
 
 public class ServerRequests {
 
-    private static final String basicUrl = "http://192.168.2.9:8080";
+    private static final String basicUrl = "http://192.168.1.69:8080";
 
-    public static void sendCoords(final String latitude, final String longitude, final String name) {
+    public static void sendCoords(final String login, final String latitude, final String longitude, final String name) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = basicUrl + "/user/addCoordinates"; //TODO change url for mobileController
+                String url = basicUrl + "/mobile/addCoordinates";
                 try{
                     RestTemplate restTemplate = new RestTemplate();
                     restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
                     MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+                    params.add("login", login);
                     params.add("name", name);
                     params.add("latitude", latitude);
                     params.add("longitude", longitude);
@@ -34,7 +35,7 @@ public class ServerRequests {
     }
 
     public static String getLoginUrl() {
-        return basicUrl + "/login/tryLogin"; //TODO change url for mobileController
+        return basicUrl + "/mobile/login";
     }
 
 }

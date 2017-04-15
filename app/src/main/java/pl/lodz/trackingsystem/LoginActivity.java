@@ -153,7 +153,8 @@ public class LoginActivity extends AppCompatActivity {
                 MultiValueMap<String, String> param = new LinkedMultiValueMap<String, String>();
                 param.add("login", mEmail);
                 param.add("password", mPassword);
-                return restTemplate.postForObject(ServerRequests.getLoginUrl(), param, Boolean.class); // TODO repair this
+                String response = restTemplate.postForObject(ServerRequests.getLoginUrl(), param, String.class); // TODO repair this
+                return new Boolean(response);
             } catch (Exception e) {
                 return null;
             }
@@ -164,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             showProgress(false);
 
-            if (true) { // TODO change this!!!
+            if (login) {
                 saveLogin(mEmail);
                 nextAction();
             } else {

@@ -60,6 +60,8 @@ public class UserActivity extends AppCompatActivity {
 
     private void nextAction() {
         Intent intent = new Intent(UserActivity.this, GpsService.class);
+        intent.putExtra("LOGIN", settings.getString("LOGIN", ""));
+        intent.putExtra("USER_NAME", settings.getString("USER_NAME", ""));
         finishAffinity();
         Toast.makeText(getApplicationContext(), getString(R.string.user_toast_info), Toast.LENGTH_SHORT).show();
         startService(intent);
