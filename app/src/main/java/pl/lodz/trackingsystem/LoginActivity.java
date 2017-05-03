@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private CheckBox rememberMe;
 
     private SharedPreferences settings;
 
@@ -45,16 +47,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        settings = getSharedPreferences(AppUtils.PREFS_NAME, 0);
-        if(!"".equals(settings.getString("LOGIN", ""))) {
-            // already logged
-            nextAction();
-        }
-
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        rememberMe = (CheckBox) findViewById(R.id.rememberMe);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -63,6 +60,16 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
+
+        settings = getSharedPreferences(AppUtils.PREFS_NAME, 0);
+        if(settings.getBoolean("AUTO_LOGIN", false)) {
+            // auto start application
+            nextAction();
+        } else if(settings.getBoolean("LOGIN_REMEMBER", false)) {
+            mEmailView.setText(settings.getString("LOGIN", ""));
+            mPasswordView.setText(settings.getString("PASSWORD", ""));
+            rememberMe.setChecked(true);
+        }
     }
 
     private void attemptLogin() {
@@ -153,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
                 MultiValueMap<String, String> param = new LinkedMultiValueMap<String, String>();
                 param.add("login", mEmail);
                 param.add("password", mPassword);
-                String response = restTemplate.postForObject(ServerRequests.getLoginUrl(), param, String.class); // TODO repair this
+                String response = restTemplate.postForObject(ServerRequests.getLoginUrl(), param, String.class);
                 return new Boolean(response);
             } catch (Exception e) {
                 return null;
@@ -166,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
 
             if (login) {
-                saveLogin(mEmail);
+                saveLoginData(mEmail, mPassword);
                 nextAction();
             } else {
                 Toast.makeText(LoginActivity.this, getString(R.string.error_login), Toast.LENGTH_SHORT).show();
@@ -179,9 +186,13 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
         }
 
-        private void saveLogin(String email) {
+        private void saveLoginData(String email, String password) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("LOGIN", email);
+            editor.putString("PASSWORD", password);
+            if(rememberMe.isChecked()) {
+                editor.putBoolean("LOGIN_REMEMBER", true);
+            }
             editor.commit();
         }
     }

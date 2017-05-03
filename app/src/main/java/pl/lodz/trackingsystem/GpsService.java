@@ -13,7 +13,8 @@ public class GpsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        gps = new GPSTracker(this, 5, intent.getStringExtra("LOGIN"), intent.getStringExtra("USER_NAME")); // TODO time from config
+        gps = new GPSTracker(this, intent.getIntExtra("USER_TIME", 5),
+                intent.getStringExtra("LOGIN"), intent.getStringExtra("USER_NAME"));
         return START_STICKY;
     }
 

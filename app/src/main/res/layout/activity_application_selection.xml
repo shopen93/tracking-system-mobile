@@ -56,4 +56,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="102dp" />
 
+    <TextView
+        android:text="@string/selection_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:layout_marginTop="33dp"
+        android:textAlignment="viewStart"
+        android:layout_below="@+id/selectionGroup"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

@@ -23,8 +23,8 @@ public class ApplicationSelection extends AppCompatActivity {
         setContentView(R.layout.activity_application_selection);
 
         settings = getSharedPreferences(AppUtils.PREFS_NAME, 0);
-        if(!"".equals(settings.getString("APPLICATION_MODE", ""))) {
-            // we know which app is it, redirect to next action
+        if(settings.getBoolean("AUTO_LOGIN", false)) {
+            // auto start application
             nextAction();
         }
 

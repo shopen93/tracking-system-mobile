@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,6 +21,8 @@ public class UserActivity extends AppCompatActivity {
 
     private Button acceptButton;
     private EditText nameInput;
+    private EditText interval;
+    private CheckBox autoStart;
 
     private SharedPreferences settings;
 
@@ -34,25 +37,36 @@ public class UserActivity extends AppCompatActivity {
         checkPermissions(); // we need to wait for permissions
 
         settings = getSharedPreferences(AppUtils.PREFS_NAME, 0);
-        if(!"".equals(settings.getString("USER_NAME", ""))) {
-            // already know user
+        if(settings.getBoolean("AUTO_LOGIN", false)) {
+            // auto start application
             nextAction();
         }
 
         nameInput = (EditText) findViewById(R.id.nameInput);
+
+        interval = (EditText) findViewById(R.id.interval);
+
+        autoStart = (CheckBox) findViewById(R.id.autoStart);
 
         acceptButton = (Button) findViewById(R.id.acceptButton);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String userName = nameInput.getText().toString();
+                int time = Integer.valueOf(interval.getText().toString());
 
                 if(TextUtils.isEmpty(userName)) {
                     nameInput.setError(getString(R.string.user_name_error));
                     return;
                 }
+                if(time <= 0) {
+                    interval.setError(getString(R.string.user_error_interval));
+                    return;
+                }
 
                 saveUserName(userName);
+                saveTime(time);
+                saveAutoStart();
                 nextAction();
             }
         });
@@ -62,6 +76,7 @@ public class UserActivity extends AppCompatActivity {
         Intent intent = new Intent(UserActivity.this, GpsService.class);
         intent.putExtra("LOGIN", settings.getString("LOGIN", ""));
         intent.putExtra("USER_NAME", settings.getString("USER_NAME", ""));
+        intent.putExtra("USER_TIME", settings.getInt("USER_TIME", 5));
         finishAffinity();
         Toast.makeText(getApplicationContext(), getString(R.string.user_toast_info), Toast.LENGTH_SHORT).show();
         startService(intent);
@@ -77,6 +92,18 @@ public class UserActivity extends AppCompatActivity {
     private void saveUserName(String userName) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("USER_NAME", userName);
+        editor.commit();
+    }
+
+    private void saveTime(int interval) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("USER_TIME", interval);
+        editor.commit();
+    }
+
+    private void saveAutoStart() {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("AUTO_LOGIN", autoStart.isChecked());
         editor.commit();
     }
 }

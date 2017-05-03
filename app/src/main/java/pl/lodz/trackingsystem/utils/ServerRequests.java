@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class ServerRequests {
 
-    private static final String basicUrl = "http://192.168.1.69:8080";
+    private static final String basicUrl = "http://192.168.43.204:8080";
 
     public static void sendCoords(final String login, final String latitude, final String longitude, final String name) {
         Thread thread = new Thread(new Runnable() {

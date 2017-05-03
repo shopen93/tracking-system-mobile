@@ -101,7 +101,7 @@ public class GPSTracker extends Service implements LocationListener {
         try {
             locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE); // get service from application context
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * minUpdateTime , minDiscance, this);
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             // updating our variables with last known position
             latitude = location.getLatitude();
             longitude = location.getLongitude();

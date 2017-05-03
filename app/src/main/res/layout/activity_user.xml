@@ -11,41 +11,72 @@
     tools:context="pl.lodz.trackingsystem.UserActivity">
 
     <TextView
-        android:text="@string/user_name"
+        android:text="@string/user_interval"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"
-        android:id="@+id/userNameText" />
+        android:layout_below="@+id/nameInput"
+        android:layout_alignStart="@+id/userNameText"
+        android:layout_marginTop="32dp"
+        android:id="@+id/textView3"
+        android:layout_alignEnd="@+id/userNameText" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name"
         android:ems="10"
+        android:layout_marginTop="34dp"
+        android:id="@+id/nameInput"
         android:layout_below="@+id/userNameText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp"
-        android:id="@+id/nameInput" />
+        android:hint="Name" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/interval"
+        android:layout_below="@+id/textView3"
+        android:layout_alignStart="@+id/nameInput"
+        android:layout_marginTop="39dp"
+        android:layout_alignEnd="@+id/nameInput"
+        android:hint="@string/user_interval_hint" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
-        android:layout_marginTop="40dp"
         android:text="@string/user_info"
-        android:layout_below="@+id/acceptButton"
-        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="32dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="@string/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        android:id="@+id/userNameText"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:text="@android:string/ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="31dp"
         android:id="@+id/acceptButton"
-        android:layout_below="@+id/nameInput"
+        android:layout_marginTop="21dp"
+        android:layout_below="@+id/interval"
         android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:text="@string/user_auto_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/acceptButton"
+        android:layout_toStartOf="@+id/acceptButton"
+        android:layout_marginTop="20dp"
+        android:id="@+id/autoStart"
+        android:layout_alignEnd="@+id/acceptButton" />
 </RelativeLayout>
