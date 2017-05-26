@@ -136,10 +136,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void nextAction() {
-        // TODO redirect for next action (MODE)
-        Intent intent = new Intent(LoginActivity.this, UserActivity.class);
-        finishAffinity();
-        startActivity(intent);
+        Intent intent = null;
+        if(AppUtils.MONIT_APP.equals(settings.getString("APPLICATION_MODE", ""))) {
+            finishAffinity();
+            intent = new Intent(LoginActivity.this, UserActivity.class);
+            startActivity(intent);
+        } else {
+            finishAffinity();
+            intent = new Intent(LoginActivity.this, AlertsService.class);
+            // TODO put some data
+            startService(intent);
+        }
     }
 
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {

@@ -4,10 +4,10 @@
 
     <!-- Strings related to applicationSelectionActivity -->
     <string name="selection_text">Wybierz rodzaj aplikacji:</string>
-    <string name="selection_monit">monitorująca</string>
-    <string name="selection_admin">administracyjna</string>
+    <string name="selection_monit">śledzenie użytkownika</string>
+    <string name="selection_admin">odbieranie komunikatów</string>
     <string name="selection_button">DALEJ</string>
-    <string name="selection_info">Aplikacja administracyjna pozwala na otrzymywanie powiadomień w przypadku opuszczenia przez śledzonego użytkownika wyznaczonej strefy.</string>
+    <string name="selection_info">Aplikacja odbierająca komunikaty pozwala na wyświetlenie odpowiedniego alertu w przypadku opuszczenia przez użytkownika strefy bezpiecznej.</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -28,5 +28,5 @@
     <string name="user_interval">Czas pomiędzy aktualizacją pozycji</string>
     <string name="user_interval_hint">Czas w pełnych minutach</string>
     <string name="user_error_interval">Czas musi być większy od 0.</string>
-    <string name="user_auto_start">Zapamiętaj moje ustawienia</string>
+    <string name="user_auto_start">Uruchamiaj przy starcie telefonu</string>
 </resources>

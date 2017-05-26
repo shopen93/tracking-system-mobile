@@ -101,13 +101,19 @@ public class GPSTracker extends Service implements LocationListener {
         try {
             locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE); // get service from application context
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * minUpdateTime , minDiscance, this);
-            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             // updating our variables with last known position
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             startTimer(timePeriod);
         } catch (SecurityException e) {
           // we don't have access
+            e.printStackTrace(); // TODO change for logger
+        } catch (NullPointerException e) {
+            // when app is first time loaded sometimes we don't have last known location
+            latitude = 0;
+            longitude = 0;
+            startTimer(timePeriod);
             e.printStackTrace(); // TODO change for logger
         } catch (Exception e) {
             e.printStackTrace(); // TODO change for logger
