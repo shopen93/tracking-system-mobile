@@ -121,7 +121,7 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     private void startTimer(long time) {
-        Timer timer = new Timer();
+        timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {

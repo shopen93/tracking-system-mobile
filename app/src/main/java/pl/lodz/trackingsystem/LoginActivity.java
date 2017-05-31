@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             finishAffinity();
             intent = new Intent(LoginActivity.this, AlertsService.class);
-            // TODO put some data
+            intent.putExtra("LOGIN", settings.getString("LOGIN", ""));
             startService(intent);
         }
     }
